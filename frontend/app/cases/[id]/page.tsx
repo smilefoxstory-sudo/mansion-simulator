@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import FeeForm from "@/components/FeeForm";
@@ -151,7 +151,8 @@ function CostChart({ rows }: { rows: Row[] }) {
   );
 }
 
-export default function CaseDetail() {
+// useParams() を使うため、下の CaseDetail から Suspense で包んで呼び出す
+function CaseDetailInner() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const caseId = Number(params.id);
@@ -424,5 +425,13 @@ export default function CaseDetail() {
         )}
       </div>
     </AppShell>
+  );
+}
+
+export default function CaseDetail() {
+  return (
+    <Suspense fallback={<p>読み込み中…</p>}>
+      <CaseDetailInner />
+    </Suspense>
   );
 }
