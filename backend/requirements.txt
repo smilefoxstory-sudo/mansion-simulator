@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+gunicorn
+pymysql
+cryptography
+python-dotenv
+python-jose[cryptography]
+pwdlib[argon2]
+python-multipart
