@@ -1,4 +1,5 @@
 import json
+import os
 from dataclasses import asdict, fields
 from typing import List
 
@@ -19,11 +20,23 @@ from tests.demo import base
 
 app = FastAPI(title="mansion-simulator")
 
-# Next.js（localhost:3000）からのアクセスを許可
+# フロントの URL（Azure）とローカル開発用の URL を許可
 # Authorization ヘッダーは allow_headers=["*"] で通る
+FRONT_ORIGIN = "https://mansion-simulator-fe-cegaawaphka8bnbx.japaneast-01.azurewebsites.net"
+
+origins = [
+    FRONT_ORIGIN,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+# 追加で許可したい URL があれば、Azure のアプリケーション設定 CORS_ORIGINS にカンマ区切りで登録
+extra = os.getenv("CORS_ORIGINS")
+if extra:
+    origins += [o.strip() for o in extra.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
