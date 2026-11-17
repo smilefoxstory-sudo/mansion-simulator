@@ -16,6 +16,7 @@ import {
   login,
   updateCase,
 } from "@/lib/api";
+import Money from "@/components/Money";
 
 const STORAGE_KEY = "access_token";
 const USER_KEY = "login_user";
@@ -407,7 +408,7 @@ export default function Home() {
 
   const isManager = user.role === "manager";
   const isBank = user.role === "bank";
-  const colCount = isBank ? 8 : 7;
+  const colCount = 5;
 
   function setBuilding(key: keyof BuildingInput, value: string) {
     setForm((prev) =>
@@ -569,23 +570,22 @@ export default function Home() {
             </select>
           </div>
 
-          <div className="table-wrap">
+          <div className="table-wrap compact">
             <table>
               <thead>
                 <tr>
-                  <th style={{ cursor: "pointer" }} onClick={() => toggleSort("id")}>
-                    ID{arrow("id")}
-                  </th>
-                  {isBank && (
-                    <th
-                      style={{ cursor: "pointer" }}
-                      onClick={() => toggleSort("company_name")}
-                    >
-                      管理会社{arrow("company_name")}
-                    </th>
-                  )}
                   <th style={{ cursor: "pointer" }} onClick={() => toggleSort("name")}>
                     案件名{arrow("name")}
+                    <span
+                      className="cell-sub"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleSort("id");
+                      }}
+                    >
+                      ID{arrow("id")}
+                      {isBank && " ・ 管理会社"}
+                    </span>
                   </th>
                   <th style={{ cursor: "pointer" }} onClick={() => toggleSort("judge")}>
                     判定{arrow("judge")}
@@ -597,8 +597,10 @@ export default function Home() {
                   >
                     最大不足額{arrow("shortage")}
                   </th>
-                  <th>共有</th>
-                  <th>ステータス</th>
+                  <th>
+                    共有
+                    <span className="cell-sub">ステータス</span>
+                  </th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -618,9 +620,13 @@ export default function Home() {
                 )}
                 {visibleCases.map((c) => (
                   <tr key={c.id}>
-                    <td>{c.id}</td>
-                    {isBank && <td>{c.company_name}</td>}
-                    <td>{c.name}</td>
+                    <td>
+                      {c.name}
+                      <span className="cell-sub">
+                        ID {c.id}
+                        {isBank && ` ・ ${c.company_name}`}
+                      </span>
+                    </td>
                     <td>
                       <JudgeBadge judge={c.judge} />
                     </td>
@@ -629,26 +635,22 @@ export default function Home() {
                         c.shortage != null && c.shortage > 0 ? "num shortage-cell" : "num"
                       }
                     >
-                      {c.shortage == null ? "-" : `${c.shortage.toLocaleString()} 円`}
+                      {c.shortage == null ? "-" : <Money n={c.shortage} />}
                     </td>
-                    <td>{c.shared ? "共有中" : "非共有"}</td>
-                    <td>{c.status ?? "-"}</td>
+                    <td>
+                      {c.shared ? "共有中" : "非共有"}
+                      <span className="cell-sub">{c.status ?? "-"}</span>
+                    </td>
                     <td className="row-actions">
                       <Link className="linkbtn" href={`/cases/${c.id}`}>
                         結果を見る
                       </Link>
                       {isManager && (
                         <>
-                          <button
-                            className="secondary small"
-                            onClick={() => openEdit(c)}
-                          >
+                          <button className="secondary small" onClick={() => openEdit(c)}>
                             編集
                           </button>
-                          <button
-                            className="danger small"
-                            onClick={() => handleDelete(c)}
-                          >
+                          <button className="danger small" onClick={() => handleDelete(c)}>
                             削除
                           </button>
                         </>

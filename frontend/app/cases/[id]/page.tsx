@@ -8,6 +8,7 @@ import FeeForm from "@/components/FeeForm";
 import PlanForm, { InitialPlan } from "@/components/PlanForm";
 import { AuthError, ForbiddenError, User, fetchCompare, fetchResult } from "@/lib/api";
 import { USER_KEY, clearAuth, getToken } from "@/lib/auth";
+import Money from "@/components/Money";
 
 type CostItem = { name: string; amount: number };
 type Row = {
@@ -318,26 +319,38 @@ function CaseDetailInner() {
             <table>
               <thead>
                 <tr>
-                  <th>年</th>
-                  <th className="num">積立金収入</th>
-                  <th className="num">工事支出</th>
+                  <th>
+                    年
+                    <span className="cell-sub">状態</span>
+                  </th>
+                  <th className="num">
+                    積立金収入
+                    <span className="cell-sub">工事支出</span>
+                  </th>
                   <th className="num">期末残高</th>
                   <th className="num">準備金目安</th>
-                  <th>期末残高の状態</th>
                 </tr>
               </thead>
               <tbody>
                 {displayRows.map((r) => (
                   <tr key={r.year}>
-                    <td>{r.year}</td>
-                    <td className="num">{yen(r.fee)}</td>
-                    <td className="num">{r.cost > 0 ? yen(r.cost) : "-"}</td>
-                    <td className="num" style={{ color: r.balance < 0 ? "#d32f2f" : undefined }}>
-                      {yen(r.balance)}
+                    <td>
+                      {r.year}
+                      <span className="cell-sub" style={{ color: ROW_VIEW[r.status].color }}>
+                        ■ {ROW_VIEW[r.status].label}
+                      </span>
                     </td>
-                    <td className="num">{yen(r.reserve)}</td>
-                    <td style={{ color: ROW_VIEW[r.status].color }}>
-                      ■ {ROW_VIEW[r.status].label}
+                    <td className="num">
+                      <Money n={r.fee} />
+                      <span className="cell-sub">
+                        {r.cost > 0 ? <Money n={r.cost} /> : "-"}
+                      </span>
+                    </td>
+                    <td className="num" style={{ color: r.balance < 0 ? "#d32f2f" : undefined }}>
+                      <Money n={r.balance} />
+                    </td>
+                    <td className="num">
+                      <Money n={r.reserve} />
                     </td>
                   </tr>
                 ))}
@@ -357,17 +370,24 @@ function CaseDetailInner() {
               <thead>
                 <tr>
                   <th>年</th>
-                  <th>シミュレーション工事（項目・金額）</th>
-                  <th className="num">シミュレーション合計</th>
-                  <th>既存計画の工事（項目・金額）</th>
-                  <th className="num">既存計画合計</th>
-                  <th className="num">差額（既存計画 − シミュレーション）</th>
+                  <th>
+                    シミュレーション工事
+                    <span className="cell-sub">項目・金額・合計</span>
+                  </th>
+                  <th>
+                    既存計画の工事
+                    <span className="cell-sub">項目・金額・合計</span>
+                  </th>
+                  <th className="num">
+                    差額
+                    <span className="cell-sub">既存計画 − シミュレーション</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {compareYears.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="empty" style={{ position: "static" }}>
+                    <td colSpan={4} className="empty" style={{ position: "static" }}>
                       比較できる工事がありません
                     </td>
                   </tr>
@@ -386,81 +406,28 @@ function CaseDetailInner() {
                         {simItems.length === 0
                           ? "-"
                           : simItems.map((c) => (
-                              <div key={c.name}>{c.name}：{yen(c.amount)}</div>
+                              <div key={c.name}>
+                                {c.name}：<Money n={c.amount} />
+                              </div>
                             ))}
+                        <span className="cell-sub">
+                          合計 {simTotal > 0 ? <Money n={simTotal} /> : "-"}
+                        </span>
                       </td>
-                      <td className="num">{simTotal > 0 ? yen(simTotal) : "-"}</td>
                       <td>
                         {works.length === 0
                           ? "-"
                           : works.map((w, i) => (
-                              <div key={i}>{w.note || "（メモなし）"}：{yen(w.amount_gross)}</div>
+                              <div key={i}>
+                                {w.note || "（メモなし）"}：<Money n={w.amount_gross} />
+                              </div>
                             ))}
+                        <span className="cell-sub">
+                          合計 {planTotal > 0 ? <Money n={planTotal} /> : "-"}
+                        </span>
                       </td>
-                      <td className="num">{planTotal > 0 ? yen(planTotal) : "-"}</td>
                       <td className="num" style={{ color: diff > 0 ? "#d32f2f" : undefined }}>
-                        {planWorks.length === 0 ? "-" : `${diff > 0 ? "+" : ""}${diff.toLocaleString()} 円`}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section className="card">
-          <h2>修繕計画の比較（シミュレーション工事 と 手投入の既存計画）</h2>
-          {planWorks.length === 0 && (
-            <p className="sub">既存計画が未登録のため、シミュレーション側のみ表示しています。</p>
-          )}
-          {planTitle && <p className="sub">既存計画：{planTitle}</p>}
-          <div style={{ overflowX: "auto" }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>年</th>
-                  <th>シミュレーション工事（項目・金額）</th>
-                  <th className="num">シミュレーション合計</th>
-                  <th>既存計画の工事（項目・金額）</th>
-                  <th className="num">既存計画合計</th>
-                  <th className="num">差額（既存計画 − シミュレーション）</th>
-                </tr>
-              </thead>
-              <tbody>
-                {compareYears.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="empty">比較できる工事がありません</td>
-                  </tr>
-                )}
-                {compareYears.map((y) => {
-                  const sim = simByYear.get(y);
-                  const simItems = sim ? itemsOf(sim) : [];
-                  const simTotal = sim?.cost ?? 0;
-                  const works = planByYear.get(y) ?? [];
-                  const planTotal = works.reduce((s, w) => s + w.amount_gross, 0);
-                  const diff = planTotal - simTotal;
-                  return (
-                    <tr key={y}>
-                      <td>{y}</td>
-                      <td>
-                        {simItems.length === 0
-                          ? "-"
-                          : simItems.map((c) => (
-                              <div key={c.name}>{c.name}：{yen(c.amount)}</div>
-                            ))}
-                      </td>
-                      <td className="num">{simTotal > 0 ? yen(simTotal) : "-"}</td>
-                      <td>
-                        {works.length === 0
-                          ? "-"
-                          : works.map((w, i) => (
-                              <div key={i}>{w.note || "（メモなし）"}：{yen(w.amount_gross)}</div>
-                            ))}
-                      </td>
-                      <td className="num">{planTotal > 0 ? yen(planTotal) : "-"}</td>
-                      <td className="num" style={{ color: diff > 0 ? "#d32f2f" : undefined }}>
-                        {planWorks.length === 0 ? "-" : `${diff > 0 ? "+" : ""}${diff.toLocaleString()} 円`}
+                        {planWorks.length === 0 ? "-" : <Money n={diff} sign />}
                       </td>
                     </tr>
                   );
