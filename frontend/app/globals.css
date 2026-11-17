@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap");
 
+/* ---- 変数 ---- */
 :root {
   --primary: #0066cc;
   --sub: #003da5;
@@ -21,10 +22,9 @@
   --line: 2px;
 }
 
+/* ---- ベース ---- */
 * { box-sizing: border-box; }
-
 html, body { max-width: 100%; }
-
 body {
   margin: 0;
   font-family: "M PLUS Rounded 1c", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -33,6 +33,13 @@ body {
   color: var(--text);
   overflow-x: hidden;
 }
+a { color: var(--primary); }
+
+/* ---- 見出し・文字 ---- */
+h1 { font-size: 28px; font-weight: 700; color: var(--sub); margin: 0 0 16px; }
+h2 { font-size: 20px; font-weight: 700; color: var(--primary); margin: 0 0 16px; }
+h3 { font-size: 16px; font-weight: 700; margin: 16px 0 8px; }
+.sub { margin: 0; color: var(--gray-5); font-size: 14px; }
 
 /* ---- レイアウト ---- */
 .shell-header {
@@ -98,23 +105,24 @@ body {
 .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
 .narrow { max-width: 420px; }
 
-/* ---- 見出し・文字 ---- */
-h1 { font-size: 28px; font-weight: 700; color: var(--sub); margin: 0 0 16px; }
-h2 { font-size: 20px; font-weight: 700; color: var(--primary); margin: 0 0 16px; }
-h3 { font-size: 16px; font-weight: 700; margin: 16px 0 8px; }
-.sub { margin: 0; color: var(--gray-5); font-size: 14px; }
-a { color: var(--primary); }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.title-row h1 { margin: 0; }
 
-.header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-
-/* ---- カード ---- */
+/* ---- カード・メトリクス ---- */
 .card {
   background: #fff;
   border: var(--line) solid var(--blue-soft);
   border-radius: var(--radius);
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: none;
   min-width: 0;
   max-width: 100%;
 }
@@ -122,11 +130,14 @@ a { color: var(--primary); }
 .card.alert-yellow { border-color: var(--warning); background: var(--warning-bg); }
 .card.alert-blue { border-color: var(--primary); }
 
-.title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.title-row h1 { margin: 0; }
-
 .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
-.metric { background: #fff; border: var(--line) solid var(--blue-soft); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.metric {
+  background: #fff;
+  border: var(--line) solid var(--blue-soft);
+  border-radius: var(--radius);
+  padding: 16px;
+  min-width: 0;
+}
 .metric-label { font-size: 12px; color: var(--gray-5); margin: 0 0 4px; }
 .metric-value { font-size: 28px; font-weight: 700; margin: 0; }
 .metric.red { border-color: var(--error); }
@@ -146,6 +157,19 @@ input, select {
   margin-bottom: 12px;
 }
 input:focus, select:focus { outline: none; border-color: var(--primary); }
+.form-card { margin-bottom: 16px; }
+.form-card select { padding: 8px; }
+.check { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.check input { width: auto; margin: 0; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.grid3 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr); gap: 8px; margin-bottom: 8px; }
+.grid2 > *, .grid3 > * { min-width: 0; }
+
+.summary { display: grid; gap: 8px; margin-bottom: 16px; }
+.chart { width: 100%; max-width: 100%; height: auto; }
+.compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 12px; }
+.compare-grid > * { min-width: 0; }
 
 /* ---- ボタン ---- */
 button {
@@ -161,13 +185,14 @@ button {
 }
 button:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
 button:disabled { background: var(--blue-soft); border-color: var(--blue-soft); cursor: not-allowed; }
-button.secondary { background: #fff; color: var(--primary); border-color: var(--primary); }
+button.secondary { background: #fff; color: var(--primary); }
 button.secondary:hover { background: var(--gray-1); }
 button.secondary:disabled { color: var(--gray-4); border-color: var(--gray-3); background: #fff; }
-button.small { padding: 4px 10px; font-size: 14px; }
 button.danger { background: #fff; color: var(--error); border-color: var(--error); }
 button.danger:hover { background: var(--error-bg); }
+button.small { padding: 4px 10px; font-size: 14px; }
 
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .linkbtn { font-size: 14px; margin-right: 8px; }
 
 /* ---- メッセージ ---- */
@@ -182,8 +207,11 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
 .empty { text-align: center; color: var(--gray-4); padding: 24px; }
 .row-red { background: #fff5f5; }
 .row-yellow { background: #fffbeb; }
+.row-actions { white-space: nowrap; }
+.row-actions button + button { margin-left: 6px; }
+.shortage-cell { background: #fff1f0; color: #b42318; font-weight: 700; }
 
-/* ---- 表のスクロールラッパー（案件一覧・年ごとの収支・修繕計画の比較） ---- */
+/* 表のスクロールラッパー（案件一覧・年ごとの収支・修繕計画の比較） */
 .table-wrap {
   width: 100%;
   max-width: 100%;
@@ -194,6 +222,8 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
   background: #fff;
 }
 .table-wrap table { width: 100%; min-width: 640px; }
+.table-wrap.wide table { min-width: 560px; }
+.table-wrap.compact table { min-width: 520px; }
 .table-wrap th,
 .table-wrap td { white-space: nowrap; }
 
@@ -210,8 +240,10 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
 .table-wrap .row-red td:first-child { background: #fff5f5; }
 .table-wrap .row-yellow td:first-child { background: #fffbeb; }
 
-/* 年ごとの収支など列数が多い表用（必要な表だけ追加指定） */
-.table-wrap.wide table { min-width: 880px; }
+/* 2段表示・万円表示 */
+.cell-sub { display: block; font-size: 12px; font-weight: 400; color: var(--gray-5); margin-top: 2px; }
+.pc-only { display: inline; }
+.sp-only { display: none; }
 
 /* ---- バッジ ---- */
 .badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius); font-size: 12px; font-weight: 700; }
@@ -221,25 +253,6 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
 .badge-none { background: var(--gray-1); color: var(--gray-5); border: 1px solid var(--gray-3); }
 .badge .star { color: var(--warning); margin-right: 2px; }
 
-/* ---- フォーム部品 ---- */
-.actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.form-card { margin-bottom: 16px; }
-.check { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-.check input { width: auto; margin: 0; }
-.row-actions { white-space: nowrap; }
-.row-actions button + button { margin-left: 6px; }
-
-.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 16px; }
-.grid3 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr); gap: 8px; margin-bottom: 8px; }
-.grid2 > *, .grid3 > * { min-width: 0; }
-.grid3 input, .grid2 input { width: 100%; }
-.form-card select { width: 100%; padding: 8px; margin-bottom: 12px; }
-
-.summary { display: grid; gap: 8px; margin-bottom: 16px; }
-.chart { width: 100%; max-width: 100%; height: auto; }
-.compare-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-bottom: 12px; }
-.compare-grid > * { min-width: 0; }
-
 /* ---- ログイン画面 ---- */
 .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
 .login-card { width: 100%; max-width: 420px; }
@@ -247,13 +260,7 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
 .login-logo .brand-logo { font-size: 32px; }
 .login-logo p { margin: 8px 0 0; color: var(--gray-5); font-size: 14px; }
 
-.shortage-cell {
-  background: #fff1f0;
-  color: #b42318;
-  font-weight: 700;
-}
-
-/* ---- レスポンシブ（スマホ） ---- */
+/* ---- レスポンシブ（スマホ・ここだけに集約） ---- */
 @media (max-width: 720px) {
   .shell-header { padding: 10px 16px; }
   .shell-body { flex-direction: column; }
@@ -264,24 +271,15 @@ th { color: var(--gray-5); font-weight: 700; background: var(--gray-1); }
   .card { padding: 12px; }
   h1 { font-size: 22px; }
 
-  .metrics { grid-template-columns: minmax(0, 1fr); }
+  .metrics,
   .compare-grid,
-  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .grid2,
   .grid3 { grid-template-columns: minmax(0, 1fr); }
 
   .table-wrap table { font-size: 13px; }
   .table-wrap th,
   .table-wrap td { padding: 8px 6px; }
-}
 
-/* ---- 万円表示・2段表示 ---- */
-.pc-only { display: inline; }
-.sp-only { display: none; }
-.cell-sub { display: block; font-size: 12px; color: var(--gray-5); margin-top: 2px; }
-.table-wrap.wide table { min-width: 560px; }
-.table-wrap.compact table { min-width: 520px; }
-
-@media (max-width: 720px) {
   .pc-only { display: none; }
   .sp-only { display: inline; }
 }

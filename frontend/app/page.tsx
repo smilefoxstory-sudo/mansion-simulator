@@ -371,7 +371,7 @@ export default function Home() {
               <span className="brand-star">★</span>
             </div>
             <span className="brand-logo">はかろうもん</span>
-            <p>修繕積立金 見える化ツール</p>
+            <p>修繕積立金チェッカー</p>
           </div>
           <form
             className="card"
