@@ -314,7 +314,7 @@ function CaseDetailInner() {
 
         <section className="card">
           <h2>年ごとの収支（{modeLabel}）</h2>
-          <div style={{ overflowX: "auto" }}>
+          <div className="table-wrap wide">
             <table>
               <thead>
                 <tr>
@@ -341,6 +341,69 @@ function CaseDetailInner() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="card">
+          <h2>修繕計画の比較（シミュレーション工事 と 手投入の既存計画）</h2>
+          {planWorks.length === 0 && (
+            <p className="sub">既存計画が未登録のため、シミュレーション側のみ表示しています。</p>
+          )}
+          {planTitle && <p className="sub">既存計画：{planTitle}</p>}
+          <div className="table-wrap wide">
+            <table>
+              <thead>
+                <tr>
+                  <th>年</th>
+                  <th>シミュレーション工事（項目・金額）</th>
+                  <th className="num">シミュレーション合計</th>
+                  <th>既存計画の工事（項目・金額）</th>
+                  <th className="num">既存計画合計</th>
+                  <th className="num">差額（既存計画 − シミュレーション）</th>
+                </tr>
+              </thead>
+              <tbody>
+                {compareYears.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="empty" style={{ position: "static" }}>
+                      比較できる工事がありません
+                    </td>
+                  </tr>
+                )}
+                {compareYears.map((y) => {
+                  const sim = simByYear.get(y);
+                  const simItems = sim ? itemsOf(sim) : [];
+                  const simTotal = sim?.cost ?? 0;
+                  const works = planByYear.get(y) ?? [];
+                  const planTotal = works.reduce((s, w) => s + w.amount_gross, 0);
+                  const diff = planTotal - simTotal;
+                  return (
+                    <tr key={y}>
+                      <td>{y}</td>
+                      <td>
+                        {simItems.length === 0
+                          ? "-"
+                          : simItems.map((c) => (
+                              <div key={c.name}>{c.name}：{yen(c.amount)}</div>
+                            ))}
+                      </td>
+                      <td className="num">{simTotal > 0 ? yen(simTotal) : "-"}</td>
+                      <td>
+                        {works.length === 0
+                          ? "-"
+                          : works.map((w, i) => (
+                              <div key={i}>{w.note || "（メモなし）"}：{yen(w.amount_gross)}</div>
+                            ))}
+                      </td>
+                      <td className="num">{planTotal > 0 ? yen(planTotal) : "-"}</td>
+                      <td className="num" style={{ color: diff > 0 ? "#d32f2f" : undefined }}>
+                        {planWorks.length === 0 ? "-" : `${diff > 0 ? "+" : ""}${diff.toLocaleString()} 円`}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

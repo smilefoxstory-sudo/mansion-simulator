@@ -569,84 +569,96 @@ export default function Home() {
             </select>
           </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th style={{ cursor: "pointer" }} onClick={() => toggleSort("id")}>
-                  ID{arrow("id")}
-                </th>
-                {isBank && (
-                  <th
-                    style={{ cursor: "pointer" }}
-                    onClick={() => toggleSort("company_name")}
-                  >
-                    管理会社{arrow("company_name")}
-                  </th>
-                )}
-                <th style={{ cursor: "pointer" }} onClick={() => toggleSort("name")}>
-                  案件名{arrow("name")}
-                </th>
-                <th style={{ cursor: "pointer" }} onClick={() => toggleSort("judge")}>
-                  判定{arrow("judge")}
-                </th>
-                <th
-                  className="num"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => toggleSort("shortage")}
-                >
-                  最大不足額{arrow("shortage")}
-                </th>
-                <th>共有</th>
-                <th>ステータス</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleCases.length === 0 && (
+          <div className="table-wrap">
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={colCount} className="empty">
-                    {cases.length === 0
-                      ? "表示できる案件がありません"
-                      : "条件に合う案件がありません"}
-                  </td>
-                </tr>
-              )}
-              {visibleCases.map((c) => (
-                <tr key={c.id}>
-                  <td>{c.id}</td>
-                  {isBank && <td>{c.company_name}</td>}
-                  <td>{c.name}</td>
-                  <td>
-                    <JudgeBadge judge={c.judge} />
-                  </td>
-                  <td
-                    className={
-                      c.shortage != null && c.shortage > 0 ? "num shortage-cell" : "num"
-                    }
+                  <th style={{ cursor: "pointer" }} onClick={() => toggleSort("id")}>
+                    ID{arrow("id")}
+                  </th>
+                  {isBank && (
+                    <th
+                      style={{ cursor: "pointer" }}
+                      onClick={() => toggleSort("company_name")}
+                    >
+                      管理会社{arrow("company_name")}
+                    </th>
+                  )}
+                  <th style={{ cursor: "pointer" }} onClick={() => toggleSort("name")}>
+                    案件名{arrow("name")}
+                  </th>
+                  <th style={{ cursor: "pointer" }} onClick={() => toggleSort("judge")}>
+                    判定{arrow("judge")}
+                  </th>
+                  <th
+                    className="num"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleSort("shortage")}
                   >
-                    {c.shortage == null ? "-" : `${c.shortage.toLocaleString()} 円`}
-                  </td>
-                  <td>{c.shared ? "共有中" : "非共有"}</td>
-                  <td>{c.status ?? "-"}</td>
-                  <td className="row-actions">
-                    <Link className="linkbtn" href={`/cases/${c.id}`}>
-                      結果を見る
-                    </Link>
-                    {isManager && (
-                      <>
-                        <button className="small secondary" onClick={() => openEdit(c)}>
-                          編集
-                        </button>
-                        <button className="small danger" onClick={() => handleDelete(c)}>
-                          削除
-                        </button>
-                      </>
-                    )}
-                  </td>
+                    最大不足額{arrow("shortage")}
+                  </th>
+                  <th>共有</th>
+                  <th>ステータス</th>
+                  <th>操作</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {visibleCases.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={colCount}
+                      className="empty"
+                      style={{ position: "static" }}
+                    >
+                      {cases.length === 0
+                        ? "表示できる案件がありません"
+                        : "条件に合う案件がありません"}
+                    </td>
+                  </tr>
+                )}
+                {visibleCases.map((c) => (
+                  <tr key={c.id}>
+                    <td>{c.id}</td>
+                    {isBank && <td>{c.company_name}</td>}
+                    <td>{c.name}</td>
+                    <td>
+                      <JudgeBadge judge={c.judge} />
+                    </td>
+                    <td
+                      className={
+                        c.shortage != null && c.shortage > 0 ? "num shortage-cell" : "num"
+                      }
+                    >
+                      {c.shortage == null ? "-" : `${c.shortage.toLocaleString()} 円`}
+                    </td>
+                    <td>{c.shared ? "共有中" : "非共有"}</td>
+                    <td>{c.status ?? "-"}</td>
+                    <td className="row-actions">
+                      <Link className="linkbtn" href={`/cases/${c.id}`}>
+                        結果を見る
+                      </Link>
+                      {isManager && (
+                        <>
+                          <button
+                            className="secondary small"
+                            onClick={() => openEdit(c)}
+                          >
+                            編集
+                          </button>
+                          <button
+                            className="danger small"
+                            onClick={() => handleDelete(c)}
+                          >
+                            削除
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </AppShell>
