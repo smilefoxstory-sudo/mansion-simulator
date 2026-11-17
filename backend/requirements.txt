@@ -7,3 +7,4 @@ python-dotenv
 python-jose[cryptography]
 pwdlib[argon2]
 python-multipart
+pydantic>=2
