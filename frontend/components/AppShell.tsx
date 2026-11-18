@@ -24,7 +24,7 @@ export default function AppShell({
             はかろうもん
           </Link>
           <span className="brand-mvp">MVP</span>
-          <span className="brand-tag">修繕積立金 見える化ツール</span>
+          <span className="brand-tag">修繕積立金シュミレーター</span>
         </div>
         {modeLabel && <span className="mode-chip">{modeLabel}</span>}
       </header>
