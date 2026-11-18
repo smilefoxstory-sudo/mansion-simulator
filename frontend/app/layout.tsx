@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "マンション修繕シミュレーター",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
