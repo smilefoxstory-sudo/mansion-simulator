@@ -587,7 +587,6 @@ def set_status(body: StatusBody, case_id: int = CASE_ID, u: dict = Depends(curre
         if u["role"] != "bank" or case["shared"] != 1:
             raise HTTPException(403, "銀行ユーザーのみ、共有済み案件で更新できます")
         with conn.cursor() as cur:
-            cur.exec        with conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO case_status (case_id, status, memo) VALUES (%s,%s,%s) "
                 "ON DUPLICATE KEY UPDATE status=VALUES(status), memo=VALUES(memo)",
