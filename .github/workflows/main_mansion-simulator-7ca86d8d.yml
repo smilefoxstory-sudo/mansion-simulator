@@ -1,9 +1,6 @@
-name: Deploy Frontend
+name: Deploy Frontend (New)
 
 on:
-  push:
-    branches: [main]
-    paths: ["frontend/**"]
   workflow_dispatch:
 
 jobs:
@@ -14,7 +11,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
@@ -33,6 +30,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: mansion-simulator-fe
-          publish-profile: ${{ secrets.AZURE_FE_PUBLISH_PROFILE }}
+          app-name: mansion-simulator-7ca86d8d
+          publish-profile: ${{ secrets.AZURE_FE_NEW_PUBLISH_PROFILE }}
           package: release.zip
